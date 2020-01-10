@@ -1,0 +1,30 @@
+version: '3.0'
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    build: env/elasticsearch
+    volumes:
+        - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+        - 9200:9200
+    expose:
+        - 9300
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:6.2.2
+    ports:
+        - 5601:5601
+  redmine_elastic_api:
+    container_name: redmine_elastic_api
+    build: redmine_elastic_api
+    links: 
+        - elasticsearch
+    ports: 
+        - "5000:5000"
+    volumes: 
+        - redmine_elastic_api:/home/src
+    command: flask run --host 0.0.0.0 --port 5000
+
+volumes:
+    elasticsearch-data:
+    redmine_elastic_api:
